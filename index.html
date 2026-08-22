@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procesando Solicitud</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f7fafc; }
+    .card { background: white; padding: 30px 20px; border-radius: 8px; text-align: center; max-width: 85%; width: 380px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { margin-top: 0; font-size: 1.3rem; }
+    p { color: #4a5568; font-size: 0.95rem; line-height: 1.5; }
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #2b6cb0; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 15px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card" id="box">
+    <div class="loader" id="loader"></div>
+    <h2 id="title" style="color: #2b6cb0;">Procesando respuesta...</h2>
+    <p id="msg">Por favor espera un momento mientras registrante la acción.</p>
+  </div>
+
+  <script>
+    // REEMPLAZA ESTA URL CON TU ENLACE DE GOOGLE APPS SCRIPT (/exec)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpAf2frOUnvstRxITKRYF5tte_XX8JCKL6JMw4rElwsIt3OS_aceFJrUNyb4xt32tmBA/exec";
+
+    const params = new URLSearchParams(window.location.search);
+    const action = params.get("action");
+    const id = params.get("id");
+
+    if (!action || !id) {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("title").style.color = "#9b2c2c";
+      document.getElementById("title").innerText = "✕ Error";
+      document.getElementById("msg").innerText = "Faltan parámetros en la solicitud.";
+    } else {
+      const fetchUrl = `${SCRIPT_URL}?action=${action}&id=${id}`;
+      
+      fetch(fetchUrl, { mode: 'no-cors' })
+        .then(() => {
+          document.getElementById("loader").style.display = "none";
+          if (action === "aprobar") {
+            document.getElementById("title").style.color = "#276749";
+            document.getElementById("title").innerText = "✓ SOLICITUD APROBADA";
+            document.getElementById("msg").innerHTML = `La solicitud <strong>${id}</strong> ha sido aprobada correctamente. Se generó el vale en PDF y se notificó al almacén.`;
+          } else {
+            document.getElementById("title").style.color = "#9b2c2c";
+            document.getElementById("title").innerText = "✕ SOLICITUD RECHAZADA";
+            document.getElementById("msg").innerHTML = `La solicitud <strong>${id}</strong> ha sido rechazada exitosamente.`;
+          }
+        })
+        .catch(() => {
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("title").style.color = "#9b2c2c";
+          document.getElementById("title").innerText = "✕ Error de Conexión";
+          document.getElementById("msg").innerText = "No se pudo procesar la solicitud. Inténtalo nuevamente.";
+        });
+    }
+  </script>
+</body>
+</html>

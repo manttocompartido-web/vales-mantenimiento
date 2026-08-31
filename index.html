@@ -60,16 +60,7 @@
       contenedor.innerHTML = "<h2 style='color:red;'>Error</h2><p>Parámetros incompletos en la solicitud.</p>";
     } else {
       // 3. Consultar a Google Apps Script en tiempo real
-      fetch(`${APPS_SCRIPT_URL}?action=${encodeURIComponent(action)}&id=${encodeURIComponent(id)}`)
-        .then(response => response.text())
-        .then(html => {
-          // Reemplazar la pantalla de carga con la respuesta real de Apps Script
-          document.body.innerHTML = html;
-        })
-        .catch(error => {
-          console.error("Error al comunicarse con el servidor:", error);
-          contenedor.innerHTML = "<h2 style='color:red;'>Error de Conexión</h2><p>No se pudo procesar la solicitud. Reintenta en unos segundos.</p>";
-        });
+      window.location.href = `${APPS_SCRIPT_URL}?action=${encodeURIComponent(action)}&id=${encodeURIComponent(id)}`;
     }
   </script>
 </body>

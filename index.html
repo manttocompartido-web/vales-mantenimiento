@@ -55,12 +55,28 @@
     const id = urlParams.get('id');
 
     const contenedor = document.getElementById('contenedor');
-
-    if (!action || !id) {
+if (!action || !id) {
       contenedor.innerHTML = "<h2 style='color:red;'>Error</h2><p>Parámetros incompletos en la solicitud.</p>";
     } else {
-      // 3. Consultar a Google Apps Script en tiempo real
-      window.location.href = `${APPS_SCRIPT_URL}?action=${encodeURIComponent(action)}&id=${encodeURIComponent(id)}`;
+      // Formulario POST automático para bypass de cuentas múltiples en móvil
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = APPS_SCRIPT_URL;
+
+      const inputAction = document.createElement('input');
+      inputAction.type = 'hidden';
+      inputAction.name = 'action';
+      inputAction.value = action;
+      form.appendChild(inputAction);
+
+      const inputId = document.createElement('input');
+      inputId.type = 'hidden';
+      inputId.name = 'id';
+      inputId.value = id;
+      form.appendChild(inputId);
+
+      document.body.appendChild(form);
+      form.submit();
     }
   </script>
 </body>
